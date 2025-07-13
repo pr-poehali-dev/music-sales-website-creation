@@ -378,7 +378,7 @@ const Index = () => {
                   variant="outline"
                   className="border-gray-600 hover:bg-gray-700"
                 >
-                  info@beathub.ru
+                  tvouwellam@gmail.com
                 </Button>
               </Card>
 
