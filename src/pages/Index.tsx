@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,9 +10,40 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    service: "",
+    beatId: "",
+    budget: "",
+    deadline: "",
+    description: "",
+    requirements: "",
+    agreedToTerms: false,
+  });
   const beats = [
     {
       id: 1,
@@ -38,6 +70,24 @@ const Index = () => {
       waveform: "img/7a0a9fbe-5eee-4f52-a397-84bed8a986fa.jpg",
     },
   ];
+
+  const handleOrderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Здесь будет логика отправки заказа
+    console.log("Заказ отправлен:", orderForm);
+    setIsOrderModalOpen(false);
+    // Показать уведомление об успешной отправке
+    alert("Заказ отправлен! Мы свяжемся с вами в ближайшее время.");
+  };
+
+  const openOrderModal = (service: string, beatId?: number) => {
+    setOrderForm((prev) => ({
+      ...prev,
+      service,
+      beatId: beatId ? beatId.toString() : "",
+    }));
+    setIsOrderModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -154,7 +204,7 @@ const Index = () => {
                     </Badge>
                   </div>
                   <CardDescription className="text-gray-400">
-                    140 BPM • 500₽
+                    {beat.bpm} BPM • {beat.price}₽
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -175,6 +225,7 @@ const Index = () => {
                     <Button
                       size="sm"
                       className="flex-1 bg-primary hover:bg-primary/90"
+                      onClick={() => openOrderModal("Покупка бита", beat.id)}
                     >
                       <Icon name="ShoppingCart" size={14} className="mr-2" />
                       Купить
@@ -234,9 +285,12 @@ const Index = () => {
                 </li>
               </ul>
               <div className="text-3xl font-bold text-primary mb-4">
-                от 799₽
+                от 5 000₽
               </div>
-              <Button className="w-full bg-primary hover:bg-primary/90">
+              <Button
+                className="w-full bg-primary hover:bg-primary/90"
+                onClick={() => openOrderModal("Сведение")}
+              >
                 Заказать сведение
               </Button>
             </Card>
@@ -270,9 +324,12 @@ const Index = () => {
                 </li>
               </ul>
               <div className="text-3xl font-bold text-primary mb-4">
-                от 599₽
+                от 3 000₽
               </div>
-              <Button className="w-full bg-primary hover:bg-primary/90">
+              <Button
+                className="w-full bg-primary hover:bg-primary/90"
+                onClick={() => openOrderModal("Мастеринг")}
+              >
                 Заказать мастеринг
               </Button>
             </Card>
@@ -378,7 +435,7 @@ const Index = () => {
                   variant="outline"
                   className="border-gray-600 hover:bg-gray-700"
                 >
-                  tvouwellam@gmail.com
+                  info@beathub.ru
                 </Button>
               </Card>
 
@@ -420,6 +477,282 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Order Modal */}
+      <Dialog open={isOrderModalOpen} onOpenChange={setIsOrderModalOpen}>
+        <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-primary">
+              Оформление заказа
+            </DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Заполните форму для создания индивидуального предложения
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleOrderSubmit} className="space-y-6 mt-4">
+            {/* Контактная информация */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary">
+                Контактная информация
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="name" className="text-gray-300">
+                    Имя *
+                  </Label>
+                  <Input
+                    id="name"
+                    required
+                    value={orderForm.name}
+                    onChange={(e) =>
+                      setOrderForm((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="Ваше имя"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="email" className="text-gray-300">
+                    Email *
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    required
+                    value={orderForm.email}
+                    onChange={(e) =>
+                      setOrderForm((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
+                    className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="your@email.com"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="phone" className="text-gray-300">
+                  Телефон
+                </Label>
+                <Input
+                  id="phone"
+                  value={orderForm.phone}
+                  onChange={(e) =>
+                    setOrderForm((prev) => ({ ...prev, phone: e.target.value }))
+                  }
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="+7 (999) 123-45-67"
+                />
+              </div>
+            </div>
+
+            <Separator className="bg-gray-600" />
+
+            {/* Детали заказа */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary">
+                Детали заказа
+              </h3>
+
+              <div>
+                <Label htmlFor="service" className="text-gray-300">
+                  Услуга *
+                </Label>
+                <Select
+                  value={orderForm.service}
+                  onValueChange={(value) =>
+                    setOrderForm((prev) => ({ ...prev, service: value }))
+                  }
+                >
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectValue placeholder="Выберите услугу" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600">
+                    <SelectItem value="Покупка бита">Покупка бита</SelectItem>
+                    <SelectItem value="Сведение">Сведение трека</SelectItem>
+                    <SelectItem value="Мастеринг">Мастеринг</SelectItem>
+                    <SelectItem value="Сведение + Мастеринг">
+                      Сведение + Мастеринг
+                    </SelectItem>
+                    <SelectItem value="Создание бита на заказ">
+                      Создание бита на заказ
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {orderForm.beatId && (
+                <div>
+                  <Label className="text-gray-300">Выбранный бит</Label>
+                  <div className="bg-gray-700 p-3 rounded-md">
+                    <span className="text-primary">
+                      Бит #{orderForm.beatId}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="budget" className="text-gray-300">
+                    Бюджет
+                  </Label>
+                  <Select
+                    value={orderForm.budget}
+                    onValueChange={(value) =>
+                      setOrderForm((prev) => ({ ...prev, budget: value }))
+                    }
+                  >
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue placeholder="Выберите диапазон" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-700 border-gray-600">
+                      <SelectItem value="До 5000₽">До 5 000₽</SelectItem>
+                      <SelectItem value="5000-10000₽">
+                        5 000 - 10 000₽
+                      </SelectItem>
+                      <SelectItem value="10000-25000₽">
+                        10 000 - 25 000₽
+                      </SelectItem>
+                      <SelectItem value="25000-50000₽">
+                        25 000 - 50 000₽
+                      </SelectItem>
+                      <SelectItem value="Свыше 50000₽">
+                        Свыше 50 000₽
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="deadline" className="text-gray-300">
+                    Срок выполнения
+                  </Label>
+                  <Select
+                    value={orderForm.deadline}
+                    onValueChange={(value) =>
+                      setOrderForm((prev) => ({ ...prev, deadline: value }))
+                    }
+                  >
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue placeholder="Выберите срок" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-700 border-gray-600">
+                      <SelectItem value="Срочно (1-2 дня)">
+                        Срочно (1-2 дня)
+                      </SelectItem>
+                      <SelectItem value="Быстро (3-5 дней)">
+                        Быстро (3-5 дней)
+                      </SelectItem>
+                      <SelectItem value="Стандартно (1-2 недели)">
+                        Стандартно (1-2 недели)
+                      </SelectItem>
+                      <SelectItem value="Без спешки (3-4 недели)">
+                        Без спешки (3-4 недели)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <Separator className="bg-gray-600" />
+
+            {/* Описание проекта */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-primary">
+                Описание проекта
+              </h3>
+
+              <div>
+                <Label htmlFor="description" className="text-gray-300">
+                  Опишите ваш проект *
+                </Label>
+                <Textarea
+                  id="description"
+                  required
+                  value={orderForm.description}
+                  onChange={(e) =>
+                    setOrderForm((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                  className="bg-gray-700 border-gray-600 text-white min-h-[100px]"
+                  placeholder="Расскажите о жанре, настроении, референсах..."
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="requirements" className="text-gray-300">
+                  Технические требования
+                </Label>
+                <Textarea
+                  id="requirements"
+                  value={orderForm.requirements}
+                  onChange={(e) =>
+                    setOrderForm((prev) => ({
+                      ...prev,
+                      requirements: e.target.value,
+                    }))
+                  }
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="Формат файлов, качество, дополнительные пожелания..."
+                />
+              </div>
+            </div>
+
+            <Separator className="bg-gray-600" />
+
+            {/* Соглашение */}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="terms"
+                checked={orderForm.agreedToTerms}
+                onCheckedChange={(checked) =>
+                  setOrderForm((prev) => ({
+                    ...prev,
+                    agreedToTerms: !!checked,
+                  }))
+                }
+                className="border-gray-600"
+              />
+              <Label htmlFor="terms" className="text-sm text-gray-300">
+                Я согласен с условиями обработки персональных данных и условиями
+                сотрудничества
+              </Label>
+            </div>
+
+            {/* Кнопки */}
+            <div className="flex gap-4 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1 border-gray-600 hover:bg-gray-700"
+                onClick={() => setIsOrderModalOpen(false)}
+              >
+                Отмена
+              </Button>
+              <Button
+                type="submit"
+                disabled={!orderForm.agreedToTerms}
+                className="flex-1 bg-primary hover:bg-primary/90 disabled:opacity-50"
+              >
+                <Icon name="Send" size={16} className="mr-2" />
+                Отправить заказ
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
