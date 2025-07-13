@@ -234,7 +234,7 @@ const Index = () => {
                 </li>
               </ul>
               <div className="text-3xl font-bold text-primary mb-4">
-                от 5 000₽
+                от 799₽
               </div>
               <Button className="w-full bg-primary hover:bg-primary/90">
                 Заказать сведение
@@ -270,7 +270,7 @@ const Index = () => {
                 </li>
               </ul>
               <div className="text-3xl font-bold text-primary mb-4">
-                от 3 000₽
+                от 599₽
               </div>
               <Button className="w-full bg-primary hover:bg-primary/90">
                 Заказать мастеринг
