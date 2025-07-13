@@ -362,7 +362,7 @@ const Index = () => {
                   variant="outline"
                   className="border-gray-600 hover:bg-gray-700"
                 >
-                  @beathub_studio
+                  @wellam_ov
                 </Button>
               </Card>
 
