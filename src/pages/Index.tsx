@@ -154,7 +154,7 @@ const Index = () => {
                     </Badge>
                   </div>
                   <CardDescription className="text-gray-400">
-                    {beat.bpm} BPM • {beat.price}₽
+                    140 BPM • 500₽
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
